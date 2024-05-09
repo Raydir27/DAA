@@ -1,10 +1,9 @@
 #include <iostream>
-#include <algorithm> // for swap
+#include <algorithm> 
 
 using namespace std;
 
 int printMaxActivities(int start[], int finish[], int n) {
-  // Sort activities by finish time using selection sort
   for (int i = 0; i < n - 1; i++) {
     int minFinishIndex = i;
     for (int j = i + 1; j < n; j++) {
