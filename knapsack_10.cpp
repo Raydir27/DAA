@@ -3,30 +3,33 @@
 using namespace std;
 
 int knapsack(int W, int wt[], int val[], int n) {
-  // ... (rest of the knapsack function remains the same)
-  // Find a scaling factor to convert floats to integers
-  int max_val = 0, max_wt = 0;
-  for (int i = 0; i < n; i++) {
-    max_val = max(max_val, val[i]);
-    max_wt = max(max_wt, (int)wt[i]);
-  }
-  int scale = 1;
-  while (max_val * scale <= INT_MAX && max_wt * scale <= INT_MAX) {
-    scale *= 10;
-  }
+  // Create a DP table to store maximum value achievable for each weight capacity
+  int dp[n + 1][W + 1];
 
-  // Scale weights and values to integers
-  for (int i = 0; i < n; i++) {
-    wt[i] *= scale;
-    val[i] *= scale;
+  // Initialize first row and column of DP table (base cases)
+  for (int i = 0; i <= n; i++) {
+    dp[i][0] = 0; // Knapsack with 0 capacity can hold value 0
+  }
+  for (int j = 0; j <= W; j++) {
+    dp[0][j] = 0; // Cannot hold any item with 0 items
   }
 
-  // Solve knapsack with integer weights and values
-  int result = knapsack(W * scale, wt, val, n);
+  // Fill the DP table using the knapsack logic
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= W; j++) {
+      // If current item's weight is less than or equal to the capacity
+      if (wt[i - 1] <= j) {
+        // Consider two options: include or exclude the current item
+        dp[i][j] = max(val[i - 1] + dp[i - 1][j - wt[i - 1]], dp[i - 1][j]);  // Include or exclude
+      } else {
+        // If current item's weight is greater than capacity, exclude it
+        dp[i][j] = dp[i - 1][j];
+      }
+    }
+  }
 
-  // Convert result back to original units
-  return result / scale;
-}
+  // The maximum value achievable is in the bottom right corner of the DP table
+  return dp[n][W];
 }
 
 int main() {
@@ -51,8 +54,7 @@ int main() {
   cout << "Enter the maximum weight capacity of the knapsack: ";
   cin >> W;
 
-  // Scale weights and values to integers if needed (as discussed previously)
-
+  // Call the scaling and knapsack functions (if needed)
   int result = knapsack(W, wt, val, n);
 
   cout << "Maximum value: " << result << endl;
