@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <algorithm>
 using namespace std;
 
 int printMaxActivities(int start[], int finish[], int n) {
